@@ -1,0 +1,94 @@
+import pygame
+import sys
+
+# Initialize pygame
+pygame.init()
+from pygame.locals import * 
+
+
+# Set up display
+screen = pygame.display.set_mode((800,600), pygame.RESIZABLE)
+pygame.display.set_caption("Game Menu")
+
+fullscreeen = False
+mainClock = pygame.time.Clock()
+monitor_size = [pygame.display.Info().current_w, pygame.display.Info().current_h]
+# Colors
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+
+# Fonts
+font = pygame.font.Font(None, 36)
+
+def draw_text(text, font, color, x, y):
+    text_surface = font.render(text, True, color)
+    text_rect = text_surface.get_rect()
+    text_rect.center = (x, y)
+    screen.blit(text_surface, text_rect)
+
+def main_menu():
+    # Define button rectangles
+    play_button_rect = pygame.Rect(300, 200, 200, 50)
+    settings_button_rect = pygame.Rect(300, 300, 200, 50)
+    quit_button_rect = pygame.Rect(300, 400, 200, 50)
+
+    # Load the image
+    image = pygame.image.load("download.jpg")  # Replace with your image filename
+    image = pygame.transform.scale(image,(800,600))
+
+
+    running = True
+
+    while running:
+        screen.fill(BLACK)
+        
+        # Display the loaded image
+        screen.blit(image, (0, 0))
+        
+        # Check for events
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            if event.type == VIDEORESIZE:
+                screen = pygame.display.set_mode((event.w,event.g),pygame.RESIZABLE)
+                if not fullscreen:
+                    screen = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
+        if event.type == KEYDOWN:
+            if event.key == K_ESCAPE:
+                pygame.quit()
+                sys.exit()
+            if event.key == K_f:
+                fullscreen = not fullscreen
+                if fullscreen:
+                    screen = pygame.display.set_mode(monitor_size, pygame.FULLSCREEN)
+                else:
+                    screen = pygame.display.set_mode((screen.get_width(), screen.get_height()), pygame.RESIZABLE)
+
+       
+
+                
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if play_button_rect.collidepoint(event.pos):
+                    print("Starting the game")  # Add your game code here
+                elif settings_button_rect.collidepoint(event.pos):
+                    print("Opening settings")  # Add your settings code here
+                elif quit_button_rect.collidepoint(event.pos):
+                    pygame.quit()
+                    sys.exit()
+                    
+        
+        # Draw buttons
+        pygame.draw.rect(screen, WHITE, play_button_rect)
+        pygame.draw.rect(screen, WHITE, settings_button_rect)
+        pygame.draw.rect(screen, WHITE, quit_button_rect)
+        draw_text("Play", font, BLACK, play_button_rect.centerx, play_button_rect.centery)
+        draw_text("Settings", font, BLACK, settings_button_rect.centerx, settings_button_rect.centery)
+        draw_text("Quit", font, BLACK, quit_button_rect.centerx, quit_button_rect.centery)
+        
+        pygame.display.flip()
+        mainClock.tick(60)
+
+if __name__ == "__main__":
+    main_menu()
